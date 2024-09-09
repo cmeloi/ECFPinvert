@@ -17,7 +17,6 @@ AO = rdFingerprintGenerator.AdditionalOutput()
 AO.AllocateBitInfoMap()
 
 DUMMY_PATTERN = rdqueries.AtomNumEqualsQueryAtom(0)
-HYPERVALENT_PATTERN = rdqueries.ExplicitValenceGreaterQueryAtom(4)
 GET_ATOM_DICT = {}
 
 
