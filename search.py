@@ -23,9 +23,7 @@ class ECFPInvert:
         invariants. in case you change the corpus (e.g. from chembllike to
         GDB-like) you should call this one.
         """
-        self.corpus = (
-            utils.ATOMTYPES
-        )  # ccorp#sorted(generate_atom_types(),key=lambda x: x[1])
+        self.corpus = utils.ATOMTYPES 
         self.time = time.time()
 
     def run_search(
@@ -65,7 +63,6 @@ class ECFPInvert:
             while N.smiles in visited and len(queue) > 0:
                 N = heappop(queue)
             N.step.append(step)
-            #print(N.score,N.depth,N.step,step,N.smiles)
             visited.add(N.smiles)
             searchpath.append(N)
             children = N.expand_node(corpus=cc)
@@ -111,7 +108,7 @@ class ECFPInvert:
 
 if __name__ == "__main__":
     targetmol = Chem.MolFromSmiles(
-        "FS(F)(F)(F)(F)C "
+        "FS(F)(F)(F)(F)c1ccc(C(F)(F)F)cc1 "
     )
     utils.set_fp_settings(3, 4096)
     utils.initialize_atomtypes(mode="GDB17")
@@ -130,4 +127,3 @@ if __name__ == "__main__":
     else:
         utils.clean_aromaticity(s)
         print(Chem.MolToSmiles(s), len(info["searchpath"]), "steps")
-        # print([Chem.MolToSmiles(g.mol) for g in sp])
