@@ -534,7 +534,6 @@ def scores(partial_mols, targetfp,corpusbits=[]):
     scores = []
     tonbits = targetfp.GetOnBits()
     fps = [get_nodummies_ecfp(m) for m in partial_mols]
-    TSs = DataStructs.BulkTanimotoSimilarity(targetfp, fps)
     w=SCORE_WEIGHTS
     for i, pm in enumerate(partial_mols):
         nonmatchingbits = 0
@@ -554,35 +553,7 @@ def scores(partial_mols, targetfp,corpusbits=[]):
     return scores, fps
 
 
-def scores2(partial_mols, targetfp):
-    """
-    score the molecules.
-    this is the old version from before the above one
-    """
-    scores = []
-    tonbits = targetfp.GetOnBits()
-    pmfps = [get_nodummies_ecfp(m,extra_info=True) for m in partial_mols]
-    fps = [x[0] for x in pmfps]
-    higher_radius = [x[1] for x in pmfps]
-    TSs = DataStructs.BulkTanimotoSimilarity(targetfp, fps)
-    w=SCORE_WEIGHTS
-    for i, TS in enumerate(TSs):
-        score = w[0] * (1 - TS) ** w[1]  * len(tonbits) / (RADIUS + 1)
-        dummies = partial_mols[i].GetAtomsMatchingQuery(DUMMY_PATTERN)
-        score += w[2] * len(dummies) ** w[3]  
-        tempmol = Chem.Mol(partial_mols[i])
-        Chem.SanitizeMol(tempmol, sanitizeOps=Chem.SanitizeFlags.SANITIZE_CLEANUP)
-        score += w[4] * len(
-            set(tempmol.GetAtomsMatchingQuery(HYPERVALENT_PATTERN)).intersection(
-                dummies
-            )
-        ) ** w[5]
-        score += -1 * w[6] * higher_radius[i] ** w[7]
-        for onbit in fps[i].GetOnBits():
-            if onbit not in tonbits:
-                score = 99999999999
-        scores.append(score)
-    return scores, fps
+
 
 
 def generate_atom_types(allowed_atoms=ALLOWED_ATOMS):
